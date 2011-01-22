@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Tests for this broken piece of shit
+ */
+
+class FirstTestCase extends DrupalWebTestCase {
+  // Methods will go here
+  public function getInfo() {
+    return array(
+      'name' => 'First module block functionality',
+      'description' => 'Tests blocks in the first module.',
+      'group' => 'First',
+      );
+  }
+}

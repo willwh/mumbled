@@ -1,0 +1,11 @@
+;$id$
+
+name = Mumbled
+description =  A module that provides a block to view a Mumble Server via Channel Viewer Protocol.
+package = Drupal 7 Development
+core = 7.x
+files[] = mumbled.module
+
+configure = admin/config/mumbled
+;dependencies[] = autoload
+;php = 5.2

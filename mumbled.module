@@ -1,0 +1,100 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * A module for displaying Mumble Voice Server details.
+ *
+ * This module will display Mumble Server Info from the Channel Viewer Protocol in XML format in a block.
+ *
+ */
+
+/**
+ * Implement hook_help().
+ */
+function mumbled_help($path, $arg) {
+  if ($path == 'admin/help#mumbled') {
+    return t('A module that provides a page to view a Mumble Server via Channel Viewer Protocol.');
+  }
+}
+
+/**
+ * Implements hook_menu
+ */
+function mumbled_menu() {
+  $items = array();
+  $items['admin/config/mumbled'] = array(
+  'title' => 'Mumbled',
+  'description' => 'Configuration for your Mumble Server',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('mumbled_admin_settings'),
+  'access callback' => 'user_access',
+  'access arguments' => array('administer mumbled'),
+  'type' => MENU_NORMAL_ITEM,
+  );
+ $items['mumbled'] = array('title' => 'Your Server Name',
+    'access callback' => TRUE,
+    'page callback' => 'mumbled_page',
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['mumbled/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10
+  );
+  $items['mumbled/edit'] = array(
+    'title' => 'Edit',
+    'description' => 'Configure mumbled.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mumbled_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer mumbled'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Callback for admin settings page
+ */
+function mumbled_admin_settings($form, &$form_state) {
+  $form['info'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Server Configuration'),
+    '#collapsible' => FALSE,
+    );
+  $form['info']['mumbled_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => variable_get('mumbled_title', t('Your Server Name')),
+    '#description' => t("The title of the ") . l(t('mumbled page'), 'mumbled') . '.',
+  );
+  $form['info']['mumbled_host'] = array('#type' => 'textfield',
+    '#required' => TRUE,
+    '#title' => t('Hostname or IP address of your server.'),
+    '#default_value' => variable_get('mumbled_host', ''),
+    '#description' => t('Add your hostname or IP as applicable.'),
+    );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function mumbled_permission() {
+  return array(
+    'administer mumbled' => array(
+      'title' => t('administer mumbled'),
+      'description' => t('Set the Name and Hostname or IP address of your Server'),
+    ),
+  );
+}
+
+function mumbled_page() {
+  $mumbled_title = variable_get('mumbled_title', t('Our Location'));
+  $mumbled_body = variable_get('mumbled_body');
+  $path = drupal_get_path('module', 'mumbled');
+  $output = '<div id="mumbled_body">' . $mumbled_body . '</div>';
+  return $output;
+}
